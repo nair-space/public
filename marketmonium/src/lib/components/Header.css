@@ -1,0 +1,10 @@
+.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+.disabled:hover::after {
+    width: 0;
+}
+.disabled:hover {
+    color: #ffffff; /* Keep original color on hover */
+}

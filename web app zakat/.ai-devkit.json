@@ -1,0 +1,18 @@
+{
+  "version": "0.16.0",
+  "environments": [
+    "gemini",
+    "antigravity"
+  ],
+  "phases": [
+    "requirements",
+    "design",
+    "planning",
+    "implementation",
+    "testing",
+    "deployment",
+    "monitoring"
+  ],
+  "createdAt": "2026-03-05T07:13:16.607Z",
+  "updatedAt": "2026-03-05T07:13:16.653Z"
+}

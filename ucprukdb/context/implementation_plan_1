@@ -1,0 +1,117 @@
+UCPRUK Client Database Dashboard - Implementation Plan
+Laravel + Blade + Tailwind CSS dashboard for UCPRUK non-profit organization.
+
+User Review Required
+IMPORTANT
+
+Stack: Laravel + Blade + Tailwind CSS + MariaDB + Google reCAPTCHA
+
+CAUTION
+
+Database Reset: php artisan migrate:fresh will reset existing data.
+
+Architecture Overview
+HTTP Request → Controller (Skinny) → Service → Repository → MariaDB
+                    ↓
+              Blade View
+Proposed Changes
+1. Dependencies
+[MODIFY] 
+composer.json
+biscolab/laravel-recaptcha - Google reCAPTCHA v2/v3
+[NEW] 
+.env
+Add reCAPTCHA keys:
+
+RECAPTCHA_SITE_KEY=6Ld-vWMsAAAAAKjRGuhTQGeBDGLVI6rD4i02hZnh
+RECAPTCHA_SECRET_KEY=6Ld-vWMsAAAAAPiBj5ce3GoLar4-9opTDFHJBP-m
+2. Database Migrations
+[MODIFY] 
+create_users_table.php
+Add: user_id, username, nama_lengkap, jabatan, nomor_telfon, status
+
+[NEW] Migrations:
+create_client_bio_table.php - 40+ fields with indexes
+create_client_assessment_table.php - 60+ fields with photos
+create_wheelchair_client_table.php - Wheelchair inventory
+3. Models
+User.php - Argon2id hashing, jabatan-based auth
+ClientBio.php - Encrypted PII fields
+ClientAssessment.php - Client relationship
+WheelchairClient.php - Client relationship
+4. Repository Layer
+[NEW] app/Repositories/Interfaces/
+ClientBioRepositoryInterface.php
+ClientAssessmentRepositoryInterface.php
+WheelchairRepositoryInterface.php
+UserRepositoryInterface.php
+[NEW] app/Repositories/
+Eloquent implementations with eager loading, pagination
+5. Service Layer
+[NEW] app/Services/
+ClientBioService.php - Caching, encryption
+ClientAssessmentService.php - Photo compression
+WheelchairService.php - Inventory logic
+DashboardService.php - Statistics
+ImportExportService.php - CSV/SQL handling
+UserService.php - Admin user management
+AuthService.php - Login logic
+6. Controllers (Skinny)
+AuthController.php - Login/logout, rate limiting
+DashboardController.php - Main stats
+ClientBioController.php - CRUD
+ClientAssessmentController.php - CRUD
+WheelchairController.php - Inventory
+ImportExportController.php - CSV/SQL
+UserController.php - Admin only
+7. Blade Views
+Layouts:
+resources/views/layouts/app.blade.php - Main layout
+resources/views/layouts/auth.blade.php - Login layout
+Auth:
+resources/views/auth/login.blade.php - Username, password, captcha, ingat saya
+Dashboard Pages:
+dashboard/index.blade.php - Main dashboard
+dashboard/sebaran-data.blade.php - Charts (Chart.js)
+client-bio/index.blade.php - Client list
+client-bio/create.blade.php - Input form
+client-bio/edit.blade.php - Edit form
+assessment/index.blade.php - Assessment list
+assessment/create.blade.php - Input form
+gudang/index.blade.php - Wheelchair inventory
+import-export/index.blade.php - CSV/SQL
+users/index.blade.php - User management (admin)
+users/create.blade.php - Add user (admin)
+Components:
+components/sidebar.blade.php - Navigation
+components/card.blade.php - Statistics cards
+components/data-table.blade.php - Paginated tables
+8. Form Requests
+LoginRequest.php
+ClientBioRequest.php
+ClientAssessmentRequest.php
+UserRequest.php
+9. Routes
+[MODIFY] 
+web.php
+Auth routes with throttle middleware
+Dashboard routes with auth middleware
+Admin routes with admin middleware
+10. Styling
+[MODIFY] 
+app.css
+Blue (#3B82F6), Yellow (#FACC15), White theme
+High-contrast borders
+Abrupt hover shadows
+Verification Plan
+Automated Tests
+bash
+php artisan migrate:fresh --seed
+php artisan test
+npm run build
+Manual Testing
+Login with captcha verification
+Navigate all dashboard pages
+Test CRUD operations
+Verify admin-only features
+Check rate limiting

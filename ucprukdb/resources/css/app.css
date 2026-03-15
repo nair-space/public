@@ -1,0 +1,291 @@
+@import "tailwindcss";
+
+/* ==========================================================
+   UCPRUK Database - Glassmorphism Theme
+   White, Blue, Yellow Template
+   ========================================================== */
+
+:root {
+    --color-primary: #3B82F6;
+    --color-primary-light: rgba(59, 130, 246, 0.1);
+    --color-accent: #FACC15;
+    --color-accent-light: rgba(250, 204, 21, 0.2);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Background with animated gradient for glass depth */
+body {
+    font-family: var(--font-sans);
+    color: #1F2937;
+    background: linear-gradient(-45deg, #EFF6FF, #FFFBEB, #DBEAFE, #FEF3C7);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    min-height: 100vh;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* ==========================================================
+   Glassmorphism Components
+   ========================================================== */
+
+/* Glass Container */
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 1rem;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.25);
+}
+
+/* Sidebar Glass */
+.sidebar-glass {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--glass-border);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.05);
+}
+
+/* Inputs & Labels */
+.label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 4px var(--color-primary-light);
+}
+
+/* Buttons */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    filter: brightness(1.1);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-accent);
+    color: #854d0e;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(250, 204, 21, 0.4);
+}
+
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(4px);
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+/* Navigation */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.25rem;
+    margin: 0.25rem 1rem;
+    border-radius: 0.75rem;
+    color: #6B7280;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+    background: rgba(59, 130, 246, 0.05);
+    color: var(--color-primary);
+    transform: translateX(4px);
+}
+
+.nav-item-active {
+    background: var(--color-primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+/* Tables */
+.table-glass {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+}
+
+.table-header {
+    text-align: left;
+    padding: 1rem;
+    font-weight: 600;
+    color: #6B7280;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table-row-glass {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.table-row-glass td:first-child {
+    border-radius: 0.75rem 0 0 0.75rem;
+}
+
+.table-row-glass td:last-child {
+    border-radius: 0 0.75rem 0.75rem 0;
+}
+
+.table-row-glass:hover {
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(1.01);
+}
+
+.table-cell {
+    padding: 1rem;
+}
+
+/* Utilities */
+.text-primary {
+    color: var(--color-primary);
+}
+
+.bg-primary {
+    background-color: var(--color-primary);
+}
+
+.bg-accent {
+    background-color: var(--color-accent);
+}
+
+/* Custom Modal Styles */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 2rem;
+    padding: 2.5rem;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+.modal-icon-container {
+    width: 64px;
+    height: 64px;
+    border-radius: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.modal-icon-red {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}

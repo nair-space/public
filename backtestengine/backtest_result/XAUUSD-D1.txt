@@ -1,0 +1,181 @@
+================================================================================
+🎯 STRATEGY FINDER FOR XAUUSD (D1)
+   Target: 60.0% minimum win rate
+   ATR Multipliers: SL=1.6, TP=3.0
+================================================================================
+
+📊 STEP 1: Feature Engineering
+----------------------------------------
+   Creating features from OHLC data...
+   Detecting candlestick patterns...
+   Found patterns: {'bullish_engulfing': np.int64(361), 'bearish_engulfing': np.int64(458), 'doji': np.int64(701), 'hammer': np.int64(58), 'shooting_star': np.int64(42), 'morning_star': np.int64(197), 'evening_star': np.int64(182), 'bullish_pin': np.int64(477), 'bearish_pin': np.int64(455), 'inside_bar': np.int64(1089), 'outside_bar': np.int64(625)}
+
+📊 STEP 2: Labeling Historical Trades
+----------------------------------------
+   Total valid samples: 6637
+   Buy winning labels: 2159 (32.5%)
+   Sell winning labels: 1184 (17.8%)
+
+   ⚠️  Warning: Historical win rates are very low
+       This pair/timeframe may be challenging to optimize
+
+📊 STEP 3: Training ML Models
+----------------------------------------
+   Training samples: 4645
+   Testing samples: 1992
+   Training Random Forest classifiers...
+   Buy Model Accuracy: 64.46%
+   Sell Model Accuracy: 84.54%
+
+   Top 5 Buy Features: ['body_position', 'return_1', 'high_max_5', 'range_to_atr', 'upper_wick']
+
+📊 STEP 4: Initial Backtest
+----------------------------------------
+   Generated 6 initial signals
+   Executed 6 trades
+
+   ⚠️  Insufficient trades (6). Need at least 200.
+   Attempting optimization with relaxed filters...
+
+   Initial Results:
+   ├─ Win Rate: 46.51%
+   ├─ Total Trades: 43
+   └─ Total Profit: $1,506.99
+
+📊 STEP 5: Optimization Required
+----------------------------------------
+   Win rate 46.51% is below 60.0% target
+
+🔧 OPTIMIZATION: Targeting 60.0% win rate...
+   Testing 45 parameter combinations...
+
+   🔄 Phase 2: Adjusting SL/TP multipliers...
+
+   📊 Best found: Win Rate 0.00%
+
+   🔄 Attempting model retraining with stricter labels...
+
+🔧 OPTIMIZATION: Targeting 60.0% win rate...
+   Testing 45 parameter combinations...
+
+   🔄 Phase 2: Adjusting SL/TP multipliers...
+
+   📊 Best found: Win Rate 0.00%
+
+================================================================================
+🏆 STRATEGY FINDER RESULTS
+================================================================================
+
+📋 BASIC INFORMATION
+----------------------------------------
+   Pair: XAUUSD
+   Strategy: ML-Optimized Pattern Recognition
+   Data Range: 2000-03-01 to 2026-01-09
+   Total Bars Analyzed: 6656
+   Test Period Size: 1992 bars
+
+📊 PERFORMANCE METRICS
+----------------------------------------
+   Win Rate: 46.51% ⚠️
+   Total Trades: 43
+   Total Profit: $1,506.99
+   Average Profit per Trade: $35.05
+   Winning Trades: ~20
+   Losing Trades: ~23
+
+⚙️  OPTIMIZED PARAMETERS
+----------------------------------------
+   Confidence Threshold: 50%
+   Pattern Filter Strength: 0.0
+   Stop Loss: 1.6x ATR
+   Take Profit: 3.0x ATR
+   Risk:Reward Ratio: 1:1.88
+   Pending Order Offset: 30 pips
+
+📝 ENTRY RULES (ML-Optimized)
+----------------------------------------
+   BUY Signal Conditions:
+   • ML Buy Probability > 50%
+   • ML Buy Probability > ML Sell Probability
+   • Entry Price: Previous High + 30 pips
+   • Stop Loss: Entry - (1.6 × ATR)
+   • Take Profit: Entry + (3.0 × ATR)
+
+   SELL Signal Conditions:
+   • ML Sell Probability > 50%
+   • ML Sell Probability > ML Buy Probability
+   • Entry Price: Previous Low - 30 pips
+   • Stop Loss: Entry + (1.6 × ATR)
+   • Take Profit: Entry - (3.0 × ATR)
+
+🔬 TOP PREDICTIVE FEATURES
+----------------------------------------
+   For BUY Signals (Feature → Importance):
+    1. body_position        ████ 8.4%
+    2. return_1             ██ 5.1%
+    3. high_max_5           ██ 4.4%
+    4. range_to_atr         ██ 4.1%
+    5. upper_wick           █ 3.6%
+    6. atr_change           █ 3.3%
+    7. volatility_20        █ 3.2%
+    8. high_max_10          █ 3.2%
+    9. macd_signal          █ 3.2%
+   10. momentum_3           █ 3.1%
+
+   For SELL Signals (Feature → Importance):
+    1. body_position        ██ 6.0%
+    2. volatility_20        ██ 5.1%
+    3. momentum_5           ██ 4.8%
+    4. atr_ratio            ██ 4.4%
+    5. macd_signal          █ 3.9%
+    6. return_1             █ 3.8%
+    7. macd                 █ 3.7%
+    8. momentum_10          █ 3.5%
+    9. momentum_3           █ 3.3%
+   10. lower_wick           █ 3.2%
+
+📈 CANDLESTICK PATTERN ANALYSIS
+----------------------------------------
+   Patterns Detected in Test Period:
+   • inside_bar          :  301 occurrences (15.1%)
+   • outside_bar         :  209 occurrences (10.5%)
+   • doji                :  208 occurrences (10.4%)
+   • bearish_engulfing   :  146 occurrences (7.3%)
+   • bearish_pin         :  142 occurrences (7.1%)
+   • bullish_pin         :  122 occurrences (6.1%)
+   • bullish_engulfing   :  117 occurrences (5.9%)
+   • evening_star        :   62 occurrences (3.1%)
+   • morning_star        :   54 occurrences (2.7%)
+   • hammer              :   17 occurrences (0.9%)
+   • shooting_star       :   12 occurrences (0.6%)
+
+📉 HISTORICAL TRADE OUTCOME ANALYSIS
+----------------------------------------
+   Based on labeling 6637 historical setups:
+   • BUY setups winning: 32.5%
+   • SELL setups winning: 17.8%
+   • Combined baseline: 25.2%
+   • ML improvement: +21.3%
+
+🤖 ML MODEL PERFORMANCE
+----------------------------------------
+   Buy Model Test Accuracy: 64.46%
+   Sell Model Test Accuracy: 84.54%
+   Training Samples: 4645
+   Testing Samples: 1992
+   Model Type: Random Forest (150 trees, max_depth=8)
+
+================================================================================
+📋 STRATEGY SUMMARY
+================================================================================
+
+   ⚠️  WARNING: Strategy does not meet 60.0% target
+   Best achievable win rate: 46.51%
+
+   Recommendations:
+   • Try different SL/TP ratios (current: 1.6/3.0)
+   • Test with a different timeframe
+   • This pair may have unfavorable market conditions
+   • Historical baseline (25.2%) is low for this setup
+
+================================================================================

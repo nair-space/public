@@ -1,0 +1,192 @@
+import json
+import os
+
+notebook = {
+    "cells": [
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "# 🚀 Multi-Pair Backtest Lab\n",
+                "Welcome to the interactive backtesting environment. This notebook allows you to test and optimize trading strategies with real-time visualization."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "import pandas as pd\n",
+                "import numpy as np\n",
+                "import matplotlib.pyplot as plt\n",
+                "import os\n",
+                "import warnings\n",
+                "import ipywidgets as widgets\n",
+                "from IPython.display import display, HTML, clear_output\n",
+                "\n",
+                "# Import modular components\n",
+                "from config import DATA_FOLDER, RESULT_FOLDER, TradingConfig\n",
+                "from indicators import calculate_atr, calculate_ichimoku, calculate_bollinger_bands, calculate_williams_r, calculate_stochastic\n",
+                "from strategies import identify_trend, generate_trend_signals, generate_mean_reversion_signals\n",
+                "from backtest import run_backtest\n",
+                "from analytics import analyze_performance\n",
+                "from visualization import plot_backtest_results\n",
+                "from strategy_finder import find_best_strategy, detect_timeframe\n",
+                "\n",
+                "warnings.filterwarnings('ignore')\n",
+                "%matplotlib inline"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "## 1. Data Selection\n",
+                "Select a CSV file from the `candle_data` folder."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "def load_and_validate_data(filename):\n",
+                "    try:\n",
+                "        df = pd.read_csv(os.path.join(DATA_FOLDER, filename))\n",
+                "        df.columns = [col.lower().strip() for col in df.columns]\n",
+                "        df['date'] = pd.to_datetime(df['date'])\n",
+                "        df = df.sort_values('date').reset_index(drop=True)\n",
+                "        if df[['date', 'open', 'high', 'low', 'close']].isnull().any().any():\n",
+                "            df = df.fillna(method='ffill')\n",
+                "        return df\n",
+                "    except Exception as e:\n",
+                "        print(f\"Error loading data: {str(e)}\")\n",
+                "        return None\n",
+                "\n",
+                "csv_files = [f for f in os.listdir(DATA_FOLDER) if f.endswith('.csv')]\n",
+                "file_dropdown = widgets.Dropdown(options=csv_files, description='CSV File:')\n",
+                "display(file_dropdown)"
+            ]
+        },
+        {
+            "cell_type": "markdown",
+            "metadata": {},
+            "source": [
+                "## 2. Configuration & Strategy Selection\n",
+                "Configure your trading parameters and choose a strategy."
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "strategy_dropdown = widgets.Dropdown(\n",
+                "    options=['TREND_FOLLOWING', 'MEAN_REVERSION', 'STRATEGY_FINDER'],\n",
+                "    value='TREND_FOLLOWING',\n",
+                "    description='Strategy:'\n",
+                ")\n",
+                "\n",
+                "sl_input = widgets.FloatText(value=1.5, description='SL ATR Mult:')\n",
+                "tp_input = widgets.FloatText(value=2.0, description='TP ATR Mult:')\n",
+                "run_button = widgets.Button(description=\"🚀 Run Backtest\", button_style='success')\n",
+                "output_area = widgets.Output()\n",
+                "\n",
+                "display(widgets.VBox([strategy_dropdown, sl_input, tp_input, run_button, output_area]))"
+            ]
+        },
+        {
+            "cell_type": "code",
+            "execution_count": None,
+            "metadata": {},
+            "outputs": [],
+            "source": [
+                "def on_run_clicked(b):\n",
+                "    with output_area:\n",
+                "        clear_output()\n",
+                "        filename = file_dropdown.value\n",
+                "        strategy_type = strategy_dropdown.value\n",
+                "        custom_sl = sl_input.value\n",
+                "        custom_tp = tp_input.value\n",
+                "        \n",
+                "        basename = os.path.splitext(filename)[0].upper()\n",
+                "        selected_pair = basename.split('_')[0] if '_' in basename else basename\n",
+                "        \n",
+                "        print(f\"Pair: {selected_pair} | Strategy: {strategy_type}\")\n",
+                "        \n",
+                "        df = load_and_validate_data(filename)\n",
+                "        if df is None: return\n",
+                "\n",
+                "        if strategy_type == 'STRATEGY_FINDER':\n",
+                "            print(\"Running Strategy Finder optimization...\")\n",
+                "            best_strat = find_best_strategy(df, selected_pair, custom_sl, custom_tp)\n",
+                "            if best_strat == 'ML_STRATEGY':\n",
+                "                print(\"ML Strategy optimization complete.\")\n",
+                "                return\n",
+                "            elif best_strat:\n",
+                "                strategy_type = best_strat\n",
+                "                print(f\"Optimized Choice: {strategy_type}\")\n",
+                "            else:\n",
+                "                return\n",
+                "\n",
+                "        config = TradingConfig(selected_pair, strategy_type, sl_multiplier=custom_sl, tp_multiplier=custom_tp)\n",
+                "        \n",
+                "        # Calculate indicators\n",
+                "        df = calculate_atr(df, config.atr_period)\n",
+                "        if strategy_type == 'TREND_FOLLOWING':\n",
+                "            df = calculate_ichimoku(df, config.tenkan_period, config.kijun_period)\n",
+                "            df = calculate_stochastic(df, config.stoch_k_period, config.stoch_d_period, config.stoch_slowing)\n",
+                "            df = identify_trend(df)\n",
+                "            df = generate_trend_signals(df, config)\n",
+                "        else:\n",
+                "            df = calculate_bollinger_bands(df, config.bollinger_period, config.bollinger_std)\n",
+                "            df = calculate_williams_r(df, config.williams_period)\n",
+                "            df = generate_mean_reversion_signals(df, config)\n",
+                "\n",
+                "        # Backtest\n",
+                "        trades, equity_curve = run_backtest(df, config)\n",
+                "        trades_df, metrics = analyze_performance(trades, equity_curve, config.initial_equity, selected_pair)\n",
+                "        \n",
+                "        # Visualization\n",
+                "        if trades_df is not None:\n",
+                "            display(HTML(f\"<h3>Performance Summary for {selected_pair}</h3>\"))\n",
+                "            metrics_df = pd.DataFrame(metrics.items(), columns=['Metric', 'Value'])\n",
+                "            display(metrics_df)\n",
+                "            \n",
+                "            # Inline plot\n",
+                "            plot_backtest_results(df, trades_df, equity_curve, config, metrics)\n",
+                "\n",
+                "run_button.on_click(on_run_clicked)"
+            ]
+        }
+    ],
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {
+            "codemirror_mode": {
+                "name": "ipython",
+                "version": 3
+            },
+            "file_extension": ".py",
+            "mimetype": "text/x-python",
+            "name": "python",
+            "nbconvert_exporter": "python",
+            "pygments_lexer": "ipython3",
+            "version": "3.8.10"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 5
+}
+
+with open('backtest_lab.ipynb', 'w') as f:
+    json.dump(notebook, f, indent=2)
+
+print("backtest_lab.ipynb created successfully!")
